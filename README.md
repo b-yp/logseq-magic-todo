@@ -1,0 +1,6 @@
+- # loseq-magic-todo
+  - Use AI to split TODO.
+- ## Demo
+  - ![demo](./20231101143749.gif)
+- ## Licence
+  - [MIT](https://choosealicense.com/licenses/mit/)
