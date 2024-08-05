@@ -15,17 +15,53 @@ const setTodos = async (block: BlockEntity | null, todos: string[]) => {
   const newTodos = todos.map((i: string) => `${marker} ${i}`)
 
   await logseq.Editor.insertBatchBlock(block.uuid, newTodos.map(i => ({ content: i })), { sibling: false })
-  logseq.Editor.exitEditingMode()
+  await logseq.Editor.exitEditingMode()
+  logseq.Editor.exitEditingMode() // TODO: Why write it twice? Because writing it once doesn't take effect.
 }
 
 async function main() {
   console.info(`#${pluginId}: MAIN`)
 
+  const styleEle = window.parent.document.createElement('style')
+  styleEle.innerHTML = `
+    .b-yp-loading {
+      position: relative;
+    }
+    .b-yp-loading::before,
+    .b-yp-loading::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: -2em;
+      width: 1.5em;
+      height: 1.5em;
+      border-radius: 50%;
+      border: 3px solid rgba(52, 152, 219, 0.3);
+      border-top-color: rgba(52, 152, 219, 1);
+      animation: spin 1.5s linear infinite;
+    }
+
+    .b-yp-loading::after {
+      animation-delay: 0.75s;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    } 
+  `
+  window.parent.document.head.append(styleEle)
+
   logseq.Editor.registerSlashCommand('✅ Magic ToDo', async () => {
+    await logseq.Editor.exitEditingMode()
     const block = await logseq.Editor.getCurrentBlock()
-    console.log('block', block)
+    const blockElement = window.parent.document.querySelector(`#block-content-${block?.uuid} .todo`)
+    blockElement?.classList.add('b-yp-loading')
     const tasks = await getTasksTree(block)
-    console.log('tasks', tasks)
     const task = tasks.pop()
     if (!task) return
 
@@ -36,9 +72,8 @@ async function main() {
     }
     const stringParams = paramsToString(params)
     const res = await fetch(`${API}?${stringParams}`).then(res => res.json())
-    console.log('res', res)
-
-    setTodos(block, res)
+    await setTodos(block, res)
+    blockElement?.classList.remove('b-yp-loading')
   })
 }
 
