@@ -61,6 +61,10 @@ async function main() {
     const block = await logseq.Editor.getCurrentBlock()
     const blockElement = window.parent.document.querySelector(`#block-content-${block?.uuid} .todo`)
     blockElement?.classList.add('b-yp-loading')
+    const loadingKey = await logseq.UI.showMsg('Loading...', '', {
+      key: 'loading',
+      timeout: 1000 * 60
+    })
     const tasks = await getTasksTree(block)
     const task = tasks.pop()
     if (!task) return
@@ -71,9 +75,15 @@ async function main() {
       tasks
     }
     const stringParams = paramsToString(params)
-    const res = await fetch(`${API}?${stringParams}`).then(res => res.json())
+    const res = await fetch(`${API}?${stringParams}`).then(res => res.json()).catch(error => {
+      logseq.UI.closeMsg(loadingKey)
+      logseq.UI.showMsg(JSON.stringify(error), 'error', {
+        timeout: 1000 * 60
+      })
+    })
     await setTodos(block, res)
     blockElement?.classList.remove('b-yp-loading')
+    logseq.UI.closeMsg(loadingKey)
   })
 }
 
