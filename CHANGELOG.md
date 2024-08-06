@@ -1,3 +1,12 @@
+# [1.1.0](https://github.com/b-yp/logseq-magic-todo/compare/v1.0.0...v1.1.0) (2024-08-06)
+
+
+### Features
+
+* Added filtering by task priority. ([b0e20c9](https://github.com/b-yp/logseq-magic-todo/commit/b0e20c96138bec011266c26e947018a84ba3199c))
+* Added page loading, Because sometimes inline loading doesn't work. ([c1bdb5c](https://github.com/b-yp/logseq-magic-todo/commit/c1bdb5c6b0c812ca363c527a480c866f67dc794b))
+* Updated Logo. ([d05d8af](https://github.com/b-yp/logseq-magic-todo/commit/d05d8af08e3f67f6cc0ea7f9c3a8e1d04b56d67c))
+
 # 1.0.0 (2024-08-05)
 
 
