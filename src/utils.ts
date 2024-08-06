@@ -9,14 +9,20 @@ export const getTasksTree = async (block: BlockEntity | null, tasks: string[] = 
   let content: string | undefined = ''
   if (block?.marker === 'TODO') {
     content = block.content.replace(`TODO `, '')
-  }
-  if (block?.marker === 'LATER') {
+  } else if (block?.marker === 'LATER') {
     content = block.content.replace(`LATER `, '')
-  }
-  if (block?.marker === 'NOW') {
+  } else if (block?.marker === 'NOW') {
     const regex = /NOW\s+(.*?)\s*:LOGBOOK:\s*(.*?)\s*:END:/s;
     const match = block.content.match(regex);
     content = match?.[1]?.trim()
+  }
+
+  if (block?.priority === 'A') {
+    content = block.content.replace(`[#A] `, '')
+  } else if (block?.priority === 'B') {
+    content = block.content.replace(`[#B] `, '')
+  } else if (block?.priority === 'C') {
+    content = block.content.replace(`[#C] `, '')
   }
 
   if (content) {
